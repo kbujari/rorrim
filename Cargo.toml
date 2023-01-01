@@ -1,10 +1,13 @@
 [package]
-name = "mirro-rs"
+name = "rorrim"
 version = "0.1.0"
 authors = ["Kleidi Bujari <dev@kleidi.ca>"]
 edition = "2021"
 description = "Downloading and filtering Arch Linux mirrors"
-repository = "https://github.com/kbzt/mirro-rs"
+homepage = "https://github.com/kbzt/rorrim"
+documentation = "https://github.com/kbzt/rorrim"
+repository = "https://github.com/kbzt/rorrim"
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
