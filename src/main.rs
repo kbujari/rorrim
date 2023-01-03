@@ -1,66 +1,25 @@
+use std::fs;
+
 mod request;
+mod cli;
 
-use clap::Parser;
-use serde::Deserialize;
-use std::{fs, path::PathBuf};
-
-#[derive(Debug, Deserialize)]
-struct Request {
-  cutoff: u32,
-  last_check: String,
-  num_checks: u8,
-  check_frequency: u16,
-  urls: Vec<Mirror>,
-  version: u8,
-}
-
-#[derive(Debug, Deserialize)]
-struct Mirror {
-  url: String,
-  protocol: String,
-  last_sync: Option<String>,
-  completion_pct: f32,
-  delay: Option<i32>,
-  duration_avg: Option<f32>,
-  duration_stddev: Option<f32>,
-  score: Option<f64>,
-  active: bool,
-  country: String,
-  country_code: String,
-  isos: bool,
-  ipv4: bool,
-  ipv6: bool,
-  details: String,
-}
-
-#[derive(Debug, Parser)]
-#[command(author, version, about, long_about)]
-struct Args {
-  /// Custom URL used to fetch all mirrors [default]
-  url: Option<String>,
-
-  /// Location to save mirrorlist to
-  #[arg(short, long, value_name = "file")]
-  save: Option<PathBuf>,
-
-  /// Log actions to stdout
-  #[arg(short, long)]
-  verbose: Option<bool>,
-
-  /// Number of mirrors to output to file
-  #[arg(short, long, value_name = "num")]
-  number: Option<u16>,
-
-  /// Parameter to sort the mirrorlist by
-  #[arg(long)]
-  sort: String,
-}
+use self::request::Request;
+use self::cli::{MIRROR_NUM,MIRROR_URL};
 
 fn main() {
-  //let req = reqwest::blocking::get("https://archlinux.org/mirrors/status/json/").unwrap();
+  // let req = reqwest::blocking::get(MIRROR_URL).unwrap();
 
-  let args = Args::parse();
-  //let req = fs::read_to_string("sample.json").unwrap();
-  //let var: Request = serde_json::from_str(&req).unwrap(); // req.json().unwrap();
-  //dbg!(&var.urls[0]);
+  let args = <cli::Args as clap::Parser>::parse();
+  let req = fs::read_to_string("sample.json").unwrap();
+  let var: Request = serde_json::from_str(&req).unwrap();
+  // let var: Request = req.json().unwrap();
+  let can: Vec<&request::Mirror> = var.urls.iter().filter(|x| {
+      args.countries.contains(&x.country)
+  }).filter(|x| !x.ipv4)
+  .take(MIRROR_NUM.into()).collect();
+
+  println!("Taken from {}", MIRROR_URL);
+  for mirror in can {
+      println!("{} - {}", mirror.url, mirror.country_code);
+  }
 }

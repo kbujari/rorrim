@@ -1,3 +1,5 @@
+[![ci](https://github.com/kbzt/rorrim/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kbzt/rorrim/actions/workflows/ci.yml)
+
 # rorrim
 
-Fetch, filter, sort, and output an up-to-date mirrorlist for Arch Linux
+[WIP] Fetch, filter, sort, and output an up-to-date mirrorlist for Arch Linux
