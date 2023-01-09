@@ -1,8 +1,4 @@
-use clap::{
-  Parser,
-  ValueEnum,
-  ArgAction::Append
-};
+use clap::{ArgAction::*, Parser, ValueEnum};
 
 use serde::Deserialize;
 use std::path::PathBuf;
@@ -26,38 +22,38 @@ pub struct Args {
   pub number: Option<u16>,
 
   /// Protocols allowed to use
-  #[arg(short, long, value_name = "http|https|ftp", value_enum, )]
+  #[arg(short, long, value_name = "http|https|ftp", value_enum)]
   pub protocol: Vec<Protocol>,
 
   /// Restrict mirrors to a set of countries by name or code
   #[arg(short, long, value_name = "Canada|CA", action = Append)]
-  pub countries: Vec<String>,
+  pub country: Vec<String>,
 
   /// Sort filtered mirrors by a metric
   #[arg(long, value_name = "age|rate|score")]
   pub sort: Option<String>,
 
-  /// Restrict to mirrors that host ISOs
-  #[arg(long, action = clap::ArgAction::SetTrue)]
-  pub isos: bool,
+  /// Do not use mirrors that serve ISOs
+  #[arg(long, action = SetFalse)]
+  pub no_iso: bool,
 
-  /// Restrict to mirrors that support IPv4
-  #[arg(long, action = clap::ArgAction::SetTrue)]
-  pub ipv4: bool,
+  /// Do not use mirrors that use IPv4
+  #[arg(long, action = SetFalse)]
+  pub no_ipv4: bool,
 
-  /// Restrict to mirrors that support IPv6
-  #[arg(long, action = clap::ArgAction::SetTrue)]
-  pub ipv6: bool,
+  /// Do not use mirrors that use IPv6
+  #[arg(long, action = SetFalse)]
+  pub no_ipv6: bool,
 
   /// Print additional information
-  #[arg(long, action = clap::ArgAction::SetTrue)]
+  #[arg(long, action = SetTrue)]
   pub verbose: Option<bool>,
 }
 
-#[derive(Debug, ValueEnum, Clone, Deserialize)]
+#[derive(Debug, ValueEnum, PartialEq, Eq, Clone, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Protocol {
   Https,
   Http,
-  Rsync
+  Rsync,
 }
