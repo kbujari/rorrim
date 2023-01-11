@@ -65,10 +65,16 @@ fn main() {
         })
         .collect();
 
-    mirrors.sort_by(|a, b| a.score.partial_cmp(&b.score).expect("Error sorting mirrors by score"));
+    mirrors.sort_by(|a, b| {
+        a.score
+            .partial_cmp(&b.score)
+            .expect("Error sorting mirrors by score")
+    });
 
     match args.save {
         Some(path) => write_file(&path, &mirrors),
-        None => mirrors.iter().for_each(|mirror| println!("Server = {}$repo/os/$arch", mirror.url)),
+        None => mirrors
+            .iter()
+            .for_each(|mirror| println!("Server = {}$repo/os/$arch", mirror.url)),
     };
 }
