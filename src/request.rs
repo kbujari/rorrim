@@ -1,5 +1,4 @@
 use serde::Deserialize;
-use crate::cli::MIRROR_URL;
 
 #[derive(Debug, Deserialize)]
 pub struct Request {
@@ -30,7 +29,13 @@ pub struct Mirror {
     pub details: String,
 }
 
-pub fn get_mirrors(url: &Option<String>, use_cache: &bool) -> Result<Request, reqwest::Error> {
-    let req: Request = reqwest::blocking::get(url.unwrap_or(MIRROR_URL.to_string()))?.json()?;
+impl std::fmt::Display for Mirror {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "Server = {}$repo/os/$arch", self.url)
+    }
+}
+
+pub fn get_mirrors(url: &str) -> Result<Request, reqwest::Error> {
+    let req: Request = reqwest::blocking::get(url)?.json()?;
     Ok(req)
 }

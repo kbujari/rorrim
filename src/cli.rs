@@ -3,9 +3,6 @@ use clap::{ArgAction::*, Parser, ValueEnum, ValueHint};
 use serde::Deserialize;
 use std::path::PathBuf;
 
-pub const MIRROR_NUM: u8 = 10;
-pub const MIRROR_URL: &str = "https://archlinux.org/mirrors/status/json/";
-
 #[derive(Debug, Parser)]
 #[command(author, version)]
 pub struct Args {
@@ -19,7 +16,7 @@ pub struct Args {
 
     /// Number of mirrors to output to file
     #[arg(short, long, value_name = "NUM")]
-    pub number: Option<u16>,
+    pub number: Option<usize>,
 
     /// Protocols allowed to use
     #[arg(
@@ -35,7 +32,7 @@ pub struct Args {
     #[arg(short, long, value_name = "France", action = Append, required = true)]
     pub country: Vec<String>,
 
-    /// Sort filtered mirrors by a metric
+    /// Sort filtered mirrors by their mirror "score" or time since last sync
     #[arg(long, value_name = "age|score", value_enum)]
     pub sort: Option<String>,
 
@@ -52,6 +49,7 @@ pub struct Args {
     pub no_ipv6: bool,
 
     /// Look for local mirrorlist cache before fetching from URL. Only available after running rorrim recently
+    #[arg(long)]
     pub use_cache: bool,
 
     /// Print additional information
