@@ -51,6 +51,9 @@ pub struct Args {
     #[arg(long, action = SetFalse)]
     pub no_ipv6: bool,
 
+    /// Look for local mirrorlist cache before fetching from URL. Only available after running rorrim recently
+    pub use_cache: bool,
+
     /// Print additional information
     #[arg(long, action = SetTrue)]
     pub verbose: Option<bool>,
@@ -64,12 +67,12 @@ pub enum Protocol {
     Rsync,
 }
 
-impl Protocol {
-    pub fn to_str(&self) -> &'static str {
+impl std::fmt::Display for Protocol {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Self::Https => "https",
-            Self::Http => "http",
-            Self::Rsync => "rsync",
+            Self::Https => write!(f, "https"),
+            Self::Http => write!(f, "http"),
+            Self::Rsync => write!(f, "rsync"),
         }
     }
 }
