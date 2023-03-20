@@ -48,10 +48,6 @@ pub struct Args {
   #[arg(long, action = SetFalse)]
   pub no_ipv6: bool,
 
-  /// Look for local mirrorlist cache before fetching from URL. Only available after running rorrim recently
-  #[arg(long, action = SetTrue)]
-  pub use_cache: bool,
-
   /// Print additional information
   #[arg(long, action = SetTrue)]
   pub verbose: Option<bool>,
