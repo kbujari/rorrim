@@ -1,8 +1,8 @@
 use crate::mirrors::Mirror;
 use crate::mirrors::MirrorList;
 
-use chrono::prelude::*;
 use anyhow::{Context, Result};
+use chrono::prelude::*;
 
 use std::fs;
 use std::io::Write;
@@ -39,7 +39,10 @@ fn main() -> Result<()> {
   let req: MirrorList;
 
   match args.use_cache {
-    true => req = serde_json::from_str(&fs::read_to_string(CACHE_PATH)?).with_context(|| format!("Failed to read cache file at {}", CACHE_PATH))?,
+    true => {
+      req = serde_json::from_str(&fs::read_to_string(CACHE_PATH)?)
+        .with_context(|| format!("Failed to read cache file at {}", CACHE_PATH))?
+    }
     false => req = mirrors::get_mirrors(&args.url.unwrap_or(MIRROR_URL.to_string()))?,
   };
 
@@ -47,7 +50,13 @@ fn main() -> Result<()> {
     .urls
     .iter()
     .filter(|m| args.country.contains(&m.country))
-    .filter(|m| args.protocol.iter().map(|m| m.to_string()).any(|p| p == m.protocol))
+    .filter(|m| {
+      args
+        .protocol
+        .iter()
+        .map(|m| m.to_string())
+        .any(|p| p == m.protocol)
+    })
     .filter(|_| args.no_iso && args.no_ipv4 && args.no_ipv6)
     .take(args.number.unwrap_or(MIRROR_NUM))
     .collect();
