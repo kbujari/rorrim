@@ -16,12 +16,19 @@ pkgver() {
 
 build(){
   cd "${pkgname}"
-  cargo build --release --locked
+
+  export RUSTUP_TOOLCHAIN=stable
+  export CARGO_TARGET_DIR=target
+
+  cargo update
+  cargo fetch --locked --target "${CARCH}-unknown-linux-gnu"
+  cargo build --release
 }
 
 package(){
-  install -Dm755 "${pkgname}/target/release/rorrim" "${pkdir}/usr/bin/rorrim"
+  cd "${pkgname}"
 
-  install -Dm644 "README.md" "${pkgdir}/usr/share/doc/${pkgname}/README.md"
-  install -Dm644 "LICENSE" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+  install -Dm 755 "target/release/rorrim" -t "${pkgdir}/usr/bin/"
+  install -Dm 644 "README.md" -t "${pkgdir}/usr/share/doc/${pkgname}"
+  install -Dm 644 "LICENSE" -t "${pkgdir}/usr/share/licenses/${pkgname}"
 }
