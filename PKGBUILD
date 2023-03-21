@@ -1,4 +1,4 @@
-# Maintainer: Kleidi Bujari <arch@kleidi.ca>
+# Maintainer: Kleidi Bujari <dev at kleidi dot ca>
 pkgname=rorrim
 pkgver=0.1.0
 pkgrel=1
