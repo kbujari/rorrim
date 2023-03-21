@@ -15,14 +15,14 @@ const MIRROR_NUM: usize = 10;
 const MIRROR_URL: &str = "https://archlinux.org/mirrors/status/json/";
 
 #[derive(Debug, Parser)]
-#[command(author, version)]
+#[command(author, version, about)]
 struct Args {
     /// Custom URL used to fetch all mirrors
     #[arg(short, long, value_name = "URL", value_hint = ValueHint::Url)]
     url: Option<String>,
 
     /// Location to save mirrorlist to
-    #[arg(short, long, value_name = "FILE", value_hint = ValueHint::FilePath)]
+    #[arg(long, value_name = "FILE", value_hint = ValueHint::FilePath)]
     save: Option<PathBuf>,
 
     /// Number of mirrors to output to file
@@ -33,7 +33,7 @@ struct Args {
     #[arg(
         short,
         long,
-        value_name = "http|https|ftp",
+        value_name = "http|https|rsync",
         value_enum,
         required = true
     )]
@@ -44,8 +44,8 @@ struct Args {
     country: Vec<String>,
 
     /// Sort filtered mirrors by their mirror "score" or time since last sync
-    #[arg(long, value_name = "age|score", value_enum)]
-    sort: Option<String>,
+    #[arg(short, long, value_name = "age|score", value_enum)]
+    sort: Option<Sort>,
 
     /// Do not use mirrors that serve ISOs
     #[arg(long, action = SetFalse)]
@@ -58,13 +58,9 @@ struct Args {
     /// Do not use mirrors that use IPv6
     #[arg(long, action = SetFalse)]
     no_ipv6: bool,
-
-    /// Print additional information
-    #[arg(long, action = SetTrue)]
-    verbose: Option<bool>,
 }
 
-#[derive(Debug, ValueEnum, PartialEq, Eq, Clone, Deserialize)]
+#[derive(Debug, ValueEnum, Clone, Deserialize)]
 #[serde(rename_all = "lowercase")]
 enum Protocol {
     Https,
@@ -82,7 +78,7 @@ impl std::fmt::Display for Protocol {
     }
 }
 
-#[derive(Debug, ValueEnum, PartialEq, Eq, Clone, Deserialize)]
+#[derive(Debug, ValueEnum, Clone, Deserialize)]
 #[serde(rename_all = "lowercase")]
 enum Sort {
     Age,
@@ -120,8 +116,7 @@ fn main() -> anyhow::Result<()> {
         .filter(|m| {
             args.protocol
                 .iter()
-                .map(|proto| proto.to_string())
-                .any(|proto| proto == m.protocol)
+                .any(|proto| proto.to_string() == m.protocol)
         })
         .filter(|_| args.no_iso && args.no_ipv4 && args.no_ipv6)
         .take(args.number.unwrap_or(MIRROR_NUM))
