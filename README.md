@@ -1,6 +1,6 @@
 [![ci](https://github.com/kbzt/rorrim/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kbzt/rorrim/actions/workflows/ci.yml) [![license](https://img.shields.io/github/license/kbzt/kleidi.ca)](https://opensource.org/licenses/MIT)
 
-# rorrim [WIP]
+# rorrim
 
 Fetch, filter, sort, and output an up-to-date mirrorlist for Arch Linux
 
@@ -13,7 +13,7 @@ Fetch, filter, sort, and output an up-to-date mirrorlist for Arch Linux
 
 ## Usage
 
-`rorrim` only requires a country and protocol to run. All other arguments are optional but recommended for better performance. A basic usage can be: 
+`rorrim` only requires a country and protocol to run. All other arguments are optional but recommended for better performance. A basic usage can be:
 
 ```sh
 rorrim --country Canada --protocol https --number 5 --sort score --save /etc/pacman.d/mirrorlist
@@ -33,7 +33,7 @@ Unless a path is provided, mirrors will be output to standard output. Enabling v
 
 ## Contributing
 
-Contributions of any kind are more than welcome, feel free to open an issue for a feature you would like to see implemented or a pull request if you had something in mind and I will try to respond as soon as I can. 
+Contributions of any kind are more than welcome, feel free to open an issue for a feature you would like to see implemented or a pull request if you had something in mind and I will try to respond as soon as I can.
 
 <br>
 
