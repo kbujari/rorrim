@@ -17,7 +17,8 @@ jobs:
       - name: Build release binary
         uses: actions-rs/cargo@v1
         with:
-          command: build --release --locked --verbose
+          command: build
+          args: --release --locked --verbose
         
       - name: Strip binary
         shell: bash
