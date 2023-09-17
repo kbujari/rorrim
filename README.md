@@ -4,13 +4,6 @@
 
 Fetch, filter, sort, and output an up-to-date mirrorlist for Arch Linux
 
-## Todo
-
-- Create PKGBUILD and publish to AUR
-- Implement sorting by last_sync and download rate
-- Add version tagging and releases to actions
-- Caching JSON response for an arbitrary TTL
-
 ## Usage
 
 `rorrim` only requires a country and protocol to run. All other arguments are optional but recommended for better performance. A basic usage can be:
@@ -37,20 +30,14 @@ Contributions of any kind are more than welcome, feel free to open an issue for 
 
 <br>
 
-The only guideline to follow is running `cargo fmt` before commits.
-## Building
+The only guideline to properly format and lint your code with `rustfmt` and `clippy` before commits.
 
-To get started, clone the repo and use:
+## TODO
 
-```sh
-cargo run
-```
+- Implement sorting by last_sync and download rate
+- Add version tagging and releases to actions
+- Caching JSON response for an arbitrary TTL
 
-To build the release version:
-
-```sh
-cargo build --release
-```
 
 ## License
 
