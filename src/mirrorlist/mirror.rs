@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
+
 #[derive(Clone, Serialize, Deserialize)]
 pub struct Mirror {
     pub url: String,
