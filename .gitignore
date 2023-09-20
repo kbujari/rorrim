@@ -1,4 +1,7 @@
 /target
-sample.json
+
+# Used for testing output
 *.txt
-mirrorlist
+
+# Used for testing input
+*.cache

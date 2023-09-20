@@ -1,63 +1,55 @@
 use clap::{ArgAction::*, ValueEnum, ValueHint};
-use serde::Deserialize;
-use std::path::PathBuf;
+use std::{fmt, path::PathBuf};
 
 #[derive(Debug, clap::Parser)]
 #[command(author, version, about)]
 pub struct Args {
-    /// Custom URL used to fetch all mirrors
+    /// Custom URL to download mirrorlist from, defaults to archlinux.org
     #[arg(short, long, value_name = "URL", value_hint = ValueHint::Url)]
     pub url: Option<String>,
 
-    /// Location to save mirrorlist to
+    /// Path to save mirrorlist to
     #[arg(long, value_name = "PATH", value_hint = ValueHint::FilePath)]
     pub save: Option<PathBuf>,
 
-    /// Number of mirrors to output to file
+    /// How many mirrors to keep in final output, defaults to 10
     #[arg(short, long, value_name = "NUM")]
     pub number: Option<usize>,
 
-    /// Protocols allowed to use
-    #[arg(
-        short,
-        long,
-        // value_name = "http|https|rsync",
-        value_enum,
-        required = true
-    )]
-    pub protocol: Vec<Protocol>,
+    /// Protocols used to connect to mirrors, defaults to ALL
+    #[arg(short, long, value_enum)]
+    pub protocol: Option<Vec<Protocol>>,
 
-    /// Restrict mirrors to a set of countries or just one
-    #[arg(short, long, value_name = "France", action = Append, required = true)]
-    pub country: Vec<String>,
+    /// Restrict to only mirrors in certain countries, defaults to ALL
+    #[arg(short, long, value_name = "France", action = Append)]
+    pub country: Option<Vec<String>>,
 
-    /// Sort filtered mirrors by their mirror "score" or time since last sync
+    /// Sort filtered mirrors by their age since last sync or mirror "score"
     #[arg(short, long, value_enum)]
     pub sort: Option<Sort>,
 
-    /// Do not use mirrors that serve ISOs
+    /// Don't use mirrors that also serve ISOs
     #[arg(long, action = SetFalse)]
     pub no_iso: bool,
 
-    /// Do not use mirrors that use IPv4
+    /// Disable mirrors that connect via IPv4
     #[arg(long, action = SetFalse)]
     pub no_ipv4: bool,
 
-    /// Do not use mirrors that use IPv6
+    /// Disable mirrors that connect via IPv6
     #[arg(long, action = SetFalse)]
     pub no_ipv6: bool,
 }
 
-#[derive(Debug, ValueEnum, Clone, Deserialize)]
-#[serde(rename_all = "lowercase")]
+#[derive(Debug, ValueEnum, Clone)]
 pub enum Protocol {
     Https,
     Http,
     Rsync,
 }
 
-impl std::fmt::Display for Protocol {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+impl fmt::Display for Protocol {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Self::Https => write!(f, "https"),
             Self::Http => write!(f, "http"),
@@ -66,8 +58,7 @@ impl std::fmt::Display for Protocol {
     }
 }
 
-#[derive(Debug, ValueEnum, Clone, Deserialize)]
-#[serde(rename_all = "lowercase")]
+#[derive(Debug, ValueEnum, Clone)]
 pub enum Sort {
     Age,
     Score,

@@ -2,11 +2,11 @@
 
 # rorrim
 
-Fetch, filter, sort, and output an up-to-date mirrorlist for Arch Linux
+Fetch, filter, sort, and output an up-to-date mirrorlist for Arch Linux. Aiming for feature parity with [`reflector`](https://wiki.archlinux.org/title/Reflector) initially, with extra functionality built-in.
 
 ## Usage
 
-`rorrim` only requires a country and protocol to run. All other arguments are optional but recommended for better performance. A basic usage can be:
+`rorrim` doesn't require any arguments to work, but it is recommended to setup filters in your region with desired protocols for the best performance. For example:
 
 ```sh
 rorrim --country Canada --protocol https --number 5 --sort score --save /etc/pacman.d/mirrorlist
@@ -22,7 +22,10 @@ To use multiple countries and/or protocols, call the argument each time:
 rorrim --country Canada --country Sweden --protocol https --protocol rsync
 ```
 
-Unless a path is provided, mirrors will be output to standard output. Enabling verbose logging will print additional information to stderr.
+### Details
+
+- Writes to stdout unless file is provided
+- Out of sync mirrors are discarded before any other filters are applied
 
 ## Contributing
 
@@ -34,10 +37,11 @@ The only guideline to properly format and lint your code with `rustfmt` and `cli
 
 ## TODO
 
-- Implement sorting by last_sync and download rate
+- Implement sorting by HTTP download speed
 - Add version tagging and releases to actions
-- Caching JSON response for an arbitrary TTL
-
+- Caching initial response for faster back to back runs
+- Allow user to specify custom filters?
+- Work as both library and executable
 
 ## License
 
