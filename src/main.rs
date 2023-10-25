@@ -36,12 +36,13 @@ fn main() -> anyhow::Result<()> {
         req.sort(&sorter);
     }
 
-    if let Some(path) = args.save {
-        let mut f = fs::File::create(path)?;
-        req.save(num, &mut f)?;
+    let mut writer: Box<dyn io::Write> = if let Some(path) = args.save {
+        Box::new(fs::File::create(path)?)
     } else {
-        req.save(num, &mut io::stdout())?;
-    }
+        Box::new(io::stdout())
+    };
+
+    req.save(num, &mut writer)?;
 
     Ok(())
 }

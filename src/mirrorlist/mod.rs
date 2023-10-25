@@ -67,7 +67,7 @@ impl MirrorList {
         )
     }
 
-    pub fn save(&self, num: usize, out: &mut dyn io::Write) -> io::Result<()> {
+    pub fn save(&self, num: usize, mut out: impl io::Write) -> io::Result<()> {
         let output = self.build_output(num);
         out.write_all(output.as_bytes())
     }
