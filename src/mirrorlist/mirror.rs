@@ -1,7 +1,6 @@
-use serde::{Deserialize, Serialize};
-use std::fmt;
+use serde::Deserialize;
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Deserialize)]
 pub struct Mirror {
     pub url: String,
     pub protocol: String,
@@ -20,18 +19,8 @@ pub struct Mirror {
     pub details: String,
 }
 
-impl fmt::Display for Mirror {
-    fn fmt(&self, f: &mut fmt::Formatter) -> std::fmt::Result {
+impl std::fmt::Display for Mirror {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         write!(f, "Server = {}$repo/os/$arch", self.url)
-    }
-}
-
-impl fmt::Debug for Mirror {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "| URL: {} | C: {} | P: {} |",
-            self.url, self.country, self.protocol
-        )
     }
 }

@@ -41,7 +41,7 @@ pub struct Args {
     pub no_ipv6: bool,
 }
 
-#[derive(Debug, ValueEnum, Clone)]
+#[derive(Debug, Clone, ValueEnum)]
 pub enum Protocol {
     Https,
     Http,
@@ -58,7 +58,7 @@ impl fmt::Display for Protocol {
     }
 }
 
-#[derive(Debug, ValueEnum, Clone)]
+#[derive(Debug, Clone, ValueEnum)]
 pub enum Sort {
     Age,
     Score,

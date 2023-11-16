@@ -4,9 +4,9 @@ version = "0.1.0"
 authors = ["Kleidi Bujari"]
 edition = "2021"
 description = "Generate mirrorlist for Arch Linux"
-homepage = "https://github.com/kbzt/rorrim"
-documentation = "https://github.com/kbzt/rorrim"
-repository = "https://github.com/kbzt/rorrim"
+homepage = "https://github.com/kbujari/rorrim"
+documentation = "https://github.com/kbujari/rorrim"
+repository = "https://github.com/kbujari/rorrim"
 license = "MIT"
 
 [dependencies]
