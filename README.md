@@ -6,20 +6,20 @@ Fetch, filter, sort, and output an up-to-date mirrorlist for Arch Linux. Aiming 
 
 ## Usage
 
-`rorrim` doesn't require any arguments to work, but it is recommended to setup filters in your region with desired protocols for the best performance. For example:
+`rorrim` doesn't require any arguments but it's recommended to setup filters in your region for the best performance. For example:
 
 ```sh
 rorrim --country Canada --protocol https --number 5 --sort score --save /etc/pacman.d/mirrorlist
 ```
 
-The above will output 5 mirrors in Canada that use https to retrieve data, sort them by their [score](https://archlinux.org/mirrors/status/) and place the output in `/etc/pacman.d/mirrorlist`. Note that this will path requires `rorrim` to be run as root or have the adequate permission for writing files.
+The above will output 5 mirrors in Canada that use https to retrieve data, sort them by their [score](https://archlinux.org/mirrors/status/) and place the output in `/etc/pacman.d/mirrorlist`.
 
 <br>
 
-To use multiple countries and/or protocols, call the argument each time:
+To use multiple countries and/or protocols:
 
 ```sh
-rorrim --country Canada --country Sweden --protocol https --protocol rsync
+rorrim -c Canada -c Sweden -p https -p rsync
 ```
 
 ### Details
