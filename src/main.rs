@@ -1,3 +1,5 @@
+//! `rorrim` generates an up to date mirrorlist suitable for use with `pacman` on Arch Linux.
+
 mod mirrorlist;
 mod opts;
 
@@ -6,7 +8,9 @@ use std::{fs, io};
 
 use crate::mirrorlist::MirrorList;
 
+/// Default amount of mirrors to output.
 const MIRROR_NUM: usize = 10;
+/// Default URL to fetch the unfiltered list of mirrors.
 const MIRROR_URL: &str = "https://archlinux.org/mirrors/status/json/";
 
 fn main() -> anyhow::Result<()> {
@@ -38,12 +42,12 @@ fn main() -> anyhow::Result<()> {
         req.sort(&sorter);
     }
 
-    let mut writer: Box<dyn io::Write> = match args.save {
+    let writer: Box<dyn io::Write> = match args.save {
         Some(path) => Box::new(fs::File::create(path)?),
         None => Box::new(io::stdout()),
     };
 
-    req.save(num, &mut writer)?;
+    req.save(num, writer)?;
 
     Ok(())
 }

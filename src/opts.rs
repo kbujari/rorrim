@@ -4,7 +4,7 @@ use std::{fmt, path::PathBuf};
 #[derive(Debug, clap::Parser)]
 #[command(author, version, about)]
 pub struct Args {
-    /// Custom URL to download mirrorlist from, defaults to archlinux.org
+    /// Custom URL to download mirrorlist from
     #[arg(short, long, value_name = "URL", value_hint = ValueHint::Url)]
     pub url: Option<String>,
 
@@ -41,6 +41,8 @@ pub struct Args {
     pub no_ipv6: bool,
 }
 
+/// Available protocols for transferring packages. Rsync should be installed so `pacman` can use
+/// rsync sources.
 #[derive(Debug, Clone, ValueEnum)]
 pub enum Protocol {
     Https,
