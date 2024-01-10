@@ -17,9 +17,9 @@ fn main() -> anyhow::Result<()> {
     let args = opts::Args::parse();
 
     let num = args.number.unwrap_or(MIRROR_NUM);
-    let url = args.url.unwrap_or(MIRROR_URL.to_owned());
+    let url = args.url.as_deref().unwrap_or(MIRROR_URL);
 
-    let mut req = MirrorList::get(&url)?;
+    let mut req = MirrorList::get(url)?;
 
     if let Some(countries) = args.country {
         req.urls
