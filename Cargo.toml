@@ -3,7 +3,7 @@ name = "rorrim"
 version = "0.1.0"
 authors = ["Kleidi Bujari"]
 edition = "2021"
-description = "Generate mirrorlist for Arch Linux"
+description = "Fetch and filter mirrors used by pacman"
 homepage = "https://github.com/kbujari/rorrim"
 documentation = "https://github.com/kbujari/rorrim"
 repository = "https://github.com/kbujari/rorrim"
@@ -16,11 +16,3 @@ clap = { version = "4.4.7", features = ["derive"] }
 reqwest = { version = "0.11.22", features = ["blocking", "json"] }
 serde = { version = "1.0.190", features = ["derive"] }
 serde_json = "1.0.107"
-
-[profile.dev.package."*"]
-opt-level = 2
-
-[profile.release]
-lto = true
-codegen-units = 1
-strip = true

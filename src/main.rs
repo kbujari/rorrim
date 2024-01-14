@@ -1,49 +1,52 @@
 mod mirrorlist;
 mod opts;
 
-use clap::Parser;
-use std::{fs, io};
-
 use crate::mirrorlist::MirrorList;
+use clap::Parser;
+use opts::{Args, Protocol};
+use std::{fs, io};
 
 const MIRROR_NUM: usize = 5;
 const MIRROR_URL: &str = "https://archlinux.org/mirrors/status/json/";
 
 fn main() -> anyhow::Result<()> {
-    let args = opts::Args::parse();
+    let args = Args::parse();
 
     let num = args.number.unwrap_or(MIRROR_NUM);
     let url = args.url.as_deref().unwrap_or(MIRROR_URL);
 
-    let mut req = MirrorList::get(&url)?;
+    let mut list = MirrorList::get(url)?;
 
+    // filter country
     if let Some(countries) = args.country {
-        req.urls
-            .retain(|mirror| countries.contains(&mirror.country));
+        list.filter(|mirror| countries.eq_ignore_ascii_case(mirror.country.as_str()));
     }
 
+    // filter protocols
     if let Some(protocols) = args.protocol {
-        req.urls.retain(|mirror| {
+        list.filter(|mirror| {
             protocols
                 .iter()
-                .any(|proto| proto.to_string() == mirror.protocol)
+                .any(|proto| mirror.protocol.parse::<Protocol>().unwrap() == *proto)
         });
     }
 
-    req.urls.retain(|mirror| {
-        mirror.isos == args.no_iso && mirror.ipv4 == args.no_ipv4 && mirror.ipv6 == args.no_ipv6
+    // filter misc
+    list.filter(|mirror| {
+        let m = (mirror.isos, mirror.ipv4, mirror.ipv6);
+        let a = (args.isos, args.ipv4, args.ipv6);
+        m == a
     });
 
+    // sort after filtering
     if let Some(sorter) = args.sort {
-        req.sort(&sorter);
+        list.sort(&sorter);
     }
 
-    let mut writer: Box<dyn io::Write> = match args.save {
-        Some(path) => Box::new(fs::File::create(path)?),
-        None => Box::new(io::stdout()),
-    };
-
-    req.save(num, &mut writer)?;
+    match args.save {
+        Some(ref path) => list.save(num, fs::File::create(path)?),
+        None => list.save(num, io::stdout()),
+    }?;
 
     Ok(())
 }

@@ -1,4 +1,5 @@
 use serde::Deserialize;
+use std::fmt;
 
 #[derive(Debug, Deserialize)]
 pub struct Mirror {
@@ -19,8 +20,8 @@ pub struct Mirror {
     pub details: String,
 }
 
-impl std::fmt::Display for Mirror {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+impl fmt::Display for Mirror {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Server = {}$repo/os/$arch", self.url)
     }
 }

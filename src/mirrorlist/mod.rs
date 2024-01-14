@@ -1,11 +1,13 @@
 mod mirror;
 
-use self::mirror::Mirror;
 use crate::opts;
 use chrono::{DateTime, Utc};
+use mirror::Mirror;
+use reqwest::blocking;
 use serde::Deserialize;
-use std::{cmp, env, fs, io};
+use std::{cmp, io};
 
+/// Response returned by archlinux API containing all official mirrors and their metadata
 #[derive(Debug, Deserialize)]
 pub struct MirrorList {
     pub cutoff: u32,
@@ -18,40 +20,31 @@ pub struct MirrorList {
 
 impl MirrorList {
     pub fn get(url: &str) -> Result<Self, reqwest::Error> {
-        let cache_path = env::temp_dir().join("mirrors.cache");
+        blocking::get(url)?.json()
+    }
 
-        let mut req: Self = match fs::read_to_string(cache_path) {
-            Ok(cache) => serde_json::from_str(&cache).unwrap(),
-            Err(_) => reqwest::blocking::get(url)?.json()?,
-        };
-
-        req.urls.retain(|mirror| mirror.last_sync.is_some());
-        Ok(req)
+    pub fn filter(&mut self, f: impl FnMut(&Mirror) -> bool) {
+        self.urls.retain(f);
     }
 
     pub fn sort(&mut self, sorter: &opts::Sort) {
+        self.urls.retain(|mirror| mirror.last_sync.is_some());
+
         use opts::Sort::*;
         match sorter {
-            Age => self.sort_by_age(),
-            Score => self.sort_by_score(),
+            Age => self.urls.sort_unstable_by_key(|k| {
+                cmp::Reverse(
+                    k.last_sync
+                        .as_ref()
+                        .unwrap()
+                        .parse::<DateTime<Utc>>()
+                        .unwrap(),
+                )
+            }),
+            Score => self
+                .urls
+                .sort_unstable_by(|a, b| a.score.partial_cmp(&b.score).unwrap()),
         }
-    }
-
-    fn sort_by_age(&mut self) {
-        self.urls.sort_unstable_by_key(|k| {
-            let key = k
-                .last_sync
-                .as_ref()
-                .unwrap()
-                .parse::<DateTime<Utc>>()
-                .unwrap();
-            cmp::Reverse(key)
-        });
-    }
-
-    fn sort_by_score(&mut self) {
-        self.urls
-            .sort_unstable_by(|a, b| a.score.partial_cmp(&b.score).unwrap())
     }
 
     fn build_output(&self, num: usize) -> String {
@@ -75,17 +68,8 @@ impl MirrorList {
 
     pub fn save(&self, num: usize, mut out: impl io::Write) -> io::Result<()> {
         let output = self.build_output(num);
-        out.write_all(output.as_bytes())
+        let bytes = output.as_bytes();
+
+        out.write_all(bytes)
     }
 }
-
-/* WIP: Implemenation of caching without impacting actual program runtime by syncing cache when
-MirrorList is dropped */
-
-/* impl Drop for MirrorList {
-    fn drop(&mut self) {
-        if let Ok(mut file) = fs::File::create(CACHE_PATH) {
-            let _ = file.write_all(serde_json::to_string(&self).unwrap().as_bytes());
-        }
-    }
-} */

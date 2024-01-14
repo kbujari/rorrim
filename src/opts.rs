@@ -1,6 +1,7 @@
 use clap::{ArgAction::*, ValueEnum, ValueHint};
-use std::{fmt, path::PathBuf};
+use std::path::PathBuf;
 
+/// CLI Arguments
 #[derive(Debug, clap::Parser)]
 #[command(author, version, about)]
 pub struct Args {
@@ -20,9 +21,9 @@ pub struct Args {
     #[arg(short, long, value_enum)]
     pub protocol: Option<Vec<Protocol>>,
 
-    /// Restrict to only mirrors in certain countries, defaults to ALL
-    #[arg(short, long, value_name = "France", action = Append)]
-    pub country: Option<Vec<String>>,
+    /// Restrict to only mirrors in a country, defaults to ALL
+    #[arg(short, long, value_name = "Country")]
+    pub country: Option<String>,
 
     /// Sort filtered mirrors by their age since last sync or mirror "score"
     #[arg(short, long, value_enum)]
@@ -30,34 +31,38 @@ pub struct Args {
 
     /// Don't use mirrors that also serve ISOs
     #[arg(long, action = SetFalse)]
-    pub no_iso: bool,
+    pub isos: bool,
 
     /// Disable mirrors that connect via IPv4
     #[arg(long, action = SetFalse)]
-    pub no_ipv4: bool,
+    pub ipv4: bool,
 
     /// Disable mirrors that connect via IPv6
     #[arg(long, action = SetFalse)]
-    pub no_ipv6: bool,
+    pub ipv6: bool,
 }
 
-#[derive(Debug, Clone, ValueEnum)]
+/// Protocols used to download from mirror
+#[derive(Debug, Clone, ValueEnum, PartialEq, Eq)]
 pub enum Protocol {
     Https,
     Http,
     Rsync,
 }
 
-impl fmt::Display for Protocol {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            Self::Https => write!(f, "https"),
-            Self::Http => write!(f, "http"),
-            Self::Rsync => write!(f, "rsync"),
+impl std::str::FromStr for Protocol {
+    type Err = &'static str;
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "https" => Ok(Self::Https),
+            "http" => Ok(Self::Http),
+            "rsync" => Ok(Self::Rsync),
+            _ => Err("invalid protocol"),
         }
     }
 }
 
+/// How to sort filtered list of mirrors before output
 #[derive(Debug, Clone, ValueEnum)]
 pub enum Sort {
     Age,
