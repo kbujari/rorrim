@@ -1,4 +1,4 @@
-[![ci](https://github.com/kbzt/rorrim/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kbzt/rorrim/actions/workflows/ci.yml) [![license](https://img.shields.io/github/license/kbzt/kleidi.ca)](https://opensource.org/licenses/MIT)
+[![ci](https://github.com/kbujari/rorrim/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/kbujari/rorrim/actions/workflows/ci.yml) [![license](https://img.shields.io/github/license/kbujari/kleidi.ca)](https://opensource.org/licenses/MIT)
 
 # rorrim
 
