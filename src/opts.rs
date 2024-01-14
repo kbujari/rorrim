@@ -5,7 +5,7 @@ use std::path::PathBuf;
 #[derive(Debug, clap::Parser)]
 #[command(author, version, about)]
 pub struct Args {
-    /// Custom URL to download mirrorlist from, defaults to archlinux.org
+    /// Custom URL to download mirrorlist from
     #[arg(short, long, value_name = "URL", value_hint = ValueHint::Url)]
     pub url: Option<String>,
 

@@ -66,7 +66,7 @@ impl MirrorList {
         format!("{info}\n{date}\n\n{output}")
     }
 
-    pub fn save(&self, num: usize, mut out: impl io::Write) -> io::Result<()> {
+    pub fn save(&self, num: usize, mut out: impl io::Write + 'static) -> io::Result<()> {
         let output = self.build_output(num);
         let bytes = output.as_bytes();
 

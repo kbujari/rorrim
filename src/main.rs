@@ -1,3 +1,5 @@
+//! `rorrim` generates an up to date mirrorlist suitable for use with `pacman` on Arch Linux.
+
 mod mirrorlist;
 mod opts;
 
@@ -6,7 +8,9 @@ use clap::Parser;
 use opts::{Args, Protocol};
 use std::{fs, io};
 
+/// Default amount of mirrors to output.
 const MIRROR_NUM: usize = 5;
+/// Default URL to fetch the unfiltered list of mirrors.
 const MIRROR_URL: &str = "https://archlinux.org/mirrors/status/json/";
 
 fn main() -> anyhow::Result<()> {
